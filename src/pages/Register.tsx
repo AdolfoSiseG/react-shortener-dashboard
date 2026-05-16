@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
-import { login } from '@/api/auth'
+import { register } from '@/api/auth'
 import { useAuth } from '@/hooks/useAuth'
 import { getErrorMessage } from '@/lib/problemDetails'
 import { AuthCard } from '@/components/auth/AuthCard'
@@ -20,26 +20,33 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 
-// The Zod schema is the single source of truth for the form's type
-// (brief sec. 6): the TS type is derived via z.infer, not declared twice.
-const loginSchema = z.object({
-  email: z.string().email('Enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
-})
+// confirmPassword is client-only (the backend takes { email, password });
+// .refine cross-checks the two fields and reports on confirmPassword.
+const registerSchema = z
+  .object({
+    email: z.string().email('Enter a valid email address'),
+    password: z.string().min(8, 'Use at least 8 characters'),
+    confirmPassword: z.string(),
+  })
+  .refine((v) => v.password === v.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
 
-type LoginValues = z.infer<typeof loginSchema>
+type RegisterValues = z.infer<typeof registerSchema>
 
-export function Login() {
+export function Register() {
   const navigate = useNavigate()
   const { setSessionFromAuth } = useAuth()
 
-  const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+  const form = useForm<RegisterValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { email: '', password: '', confirmPassword: '' },
   })
 
   const mutation = useMutation({
-    mutationFn: (values: LoginValues) => login(values),
+    mutationFn: (values: RegisterValues) =>
+      register({ email: values.email, password: values.password }),
     onSuccess: (auth) => {
       setSessionFromAuth(auth)
       navigate('/', { replace: true })
@@ -51,16 +58,16 @@ export function Login() {
 
   return (
     <AuthCard
-      title="Sign in"
-      description="Access your URL shortener dashboard."
+      title="Create account"
+      description="Start shortening and tracking your links."
       footer={
         <span>
-          No account?{' '}
+          Already registered?{' '}
           <Link
-            to="/register"
+            to="/login"
             className="text-foreground font-medium underline-offset-4 hover:underline"
           >
-            Create one
+            Sign in
           </Link>
         </span>
       }
@@ -104,7 +111,25 @@ export function Login() {
                 <FormControl>
                   <Input
                     type="password"
-                    autoComplete="current-password"
+                    autoComplete="new-password"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    autoComplete="new-password"
                     {...field}
                   />
                 </FormControl>
@@ -118,7 +143,7 @@ export function Login() {
             className="w-full"
             disabled={mutation.isPending}
           >
-            {mutation.isPending ? 'Signing in...' : 'Sign in'}
+            {mutation.isPending ? 'Creating account...' : 'Create account'}
           </Button>
         </form>
       </Form>
