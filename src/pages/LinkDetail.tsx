@@ -10,6 +10,7 @@ import { LinksError } from '@/components/links/LinksError'
 import { EditLinkSheet } from '@/components/links/EditLinkSheet'
 import { DeleteLinkDialog } from '@/components/links/DeleteLinkDialog'
 import { QrCard } from '@/components/links/QrCard'
+import { LinkAnalytics } from '@/components/stats/LinkAnalytics'
 import { formatDate, shortUrl } from '@/lib/format'
 
 export function LinkDetail() {
@@ -110,17 +111,7 @@ export function LinkDetail() {
 
               <QrCard link={link} />
 
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-base">Analytics</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground text-sm">
-                    Clicks over time, top countries, and devices arrive in
-                    Fase 3.
-                  </p>
-                </CardContent>
-              </Card>
+              <LinkAnalytics id={link.id} />
             </div>
           )
         })()
