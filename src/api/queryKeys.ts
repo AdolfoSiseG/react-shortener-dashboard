@@ -14,6 +14,8 @@ export const queryKeys = {
     ['links', params] as const,
   link: (id: string) => ['link', id] as const,
   linkStats: (id: string) => ['link', id, 'stats'] as const,
+  linkQr: (id: string, size: number) =>
+    ['link', id, 'qr', size] as const,
   statsOverview: () => ['stats', 'overview'] as const,
   statsByTime: (params: {
     from: string

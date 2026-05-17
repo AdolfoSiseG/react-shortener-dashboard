@@ -6,6 +6,7 @@ import { Login } from '@/pages/Login'
 import { Register } from '@/pages/Register'
 import { Dashboard } from '@/pages/Dashboard'
 import { Links } from '@/pages/Links'
+import { LinkDetail } from '@/pages/LinkDetail'
 import { Toaster } from '@/components/ui/sonner'
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/links" element={<Links />} />
+            <Route path="/links/:id" element={<LinkDetail />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
