@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { ChevronDown, LogOut } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
+import { MobileNav } from '@/components/layout/MobileNav'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -21,7 +22,8 @@ export function Topbar() {
   }
 
   return (
-    <header className="bg-background flex h-14 items-center justify-end border-b px-4">
+    <header className="bg-background flex h-14 items-center justify-between border-b px-4">
+      <MobileNav />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="max-w-[12rem] gap-1.5">

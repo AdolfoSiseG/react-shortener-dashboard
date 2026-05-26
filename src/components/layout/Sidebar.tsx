@@ -1,11 +1,6 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Link2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-
-const navItems = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/links', label: 'Links', icon: Link2, end: false },
-]
+import { navItems } from '@/components/layout/navItems'
 
 export function Sidebar() {
   return (
